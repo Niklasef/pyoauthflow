@@ -28,7 +28,6 @@ def callback():
 
     access_token = exchange_auth_code_for_token(code)
 
-    # Return the access token to the client (e.g., Insomnia)
     return f"Access token: {access_token}"
 
 @app.route('/send-email', methods=['POST'])
@@ -64,7 +63,7 @@ def get_contacts(access_token):
     response = requests.get(contacts_url, headers=headers)
     if response.status_code == 200:
         logger.info("Contacts retrieved successfully from resource server.")
-        return response.text  # Return plain text response
+        return response.text
     logger.error(f"Error fetching contacts from resource server, status code: {response.status_code}")
     return {'error': 'Failed to fetch contacts'}
 
