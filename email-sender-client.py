@@ -53,19 +53,14 @@ def exchange_auth_code_for_token(code):
         'redirect_uri': REDIRECT_URI
     }
     response = requests.post(AUTH_SERVER_TOKEN_ENDPOINT, data=payload)
-    if response.status_code == 200:
-        return response.text
-    return None
+    return response.text
 
 def get_contacts(access_token):
     contacts_url = "http://localhost:5003/contacts"
     headers = {'Authorization': access_token}
     response = requests.get(contacts_url, headers=headers)
-    if response.status_code == 200:
-        logger.info("Contacts retrieved successfully from resource server.")
-        return response.text
-    logger.error(f"Error fetching contacts from resource server, status code: {response.status_code}")
-    return {'error': 'Failed to fetch contacts'}
+    logger.info("Contacts retrieved successfully from resource server.")
+    return response.text
 
 if __name__ == '__main__':
     logger.info("Starting the email sender client application...")
