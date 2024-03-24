@@ -24,7 +24,7 @@ def login():
 def callback():
     code = request.args.get('code')
     if not code:
-        return "No authorization code received", 400
+        return "No authorization code received", 401
 
     access_token = exchange_auth_code_for_token(code)
 
