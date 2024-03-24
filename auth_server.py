@@ -89,11 +89,6 @@ def token():
         logger.error("Invalid request for token")
         return "Invalid request", 400
 
-if __name__ == '__main__':
-    logger.info("Starting the auth server...")
-    app.run(port=5002, debug=True)
-    logger.info("Auth server has started.")
-
 @app.route('/introspect', methods=['POST'])
 def introspect():
     token = request.form.get('token')
@@ -105,3 +100,8 @@ def introspect():
         return token_data  # Simplified for demo; consider what data should be shared
     else:
         return "Token is invalid or expired", 401
+
+if __name__ == '__main__':
+    logger.info("Starting the auth server...")
+    app.run(port=5002, debug=True)
+    logger.info("Auth server has started.")
