@@ -22,20 +22,25 @@ def login():
 
 @app.route('/callback')
 def callback():
+    # The callback endpoint might simply inform the user that the authorization was successful
+    # and instruct them to use the authorization code with the send-email endpoint.
     code = request.args.get('code')
     if not code:
         return "No authorization code received", 400
-
-    access_token = exchange_auth_code_for_token(code)
-
-    return f"Access token: {access_token}"
+    return f"Authorization successful. Please use the following code with the send-email endpoint: {code}"
 
 @app.route('/send-email', methods=['POST'])
 def send_email():
-    access_token = request.headers.get('Authorization')
+    # Expecting an authorization code in the request
+    auth_code = request.form.get('code') or request.headers.get('Authorization-Code')
+    if not auth_code:
+        logger.info("No authorization code provided.")
+        return "Authorization code is required", 401
+
+    # Exchange the authorization code for an access token
+    access_token = exchange_auth_code_for_token(auth_code)
     if not access_token:
-        logger.info("No access token provided.")
-        return "Access token is required", 401
+        return "Failed to exchange authorization code for access token", 500
 
     logger.info("Access token received, fetching contacts.")
     contacts = get_contacts(access_token)
@@ -53,11 +58,12 @@ def exchange_auth_code_for_token(code):
         'redirect_uri': REDIRECT_URI
     }
     response = requests.post(AUTH_SERVER_TOKEN_ENDPOINT, data=payload)
-    return response.text
+    # Assuming the response contains the access token directly in the body
+    return response.text.strip()
 
 def get_contacts(access_token):
     contacts_url = "http://localhost:5003/contacts"
-    headers = {'Authorization': access_token}
+    headers = {'Authorization': f'Bearer {access_token}'}
     response = requests.get(contacts_url, headers=headers)
     logger.info("Contacts retrieved successfully from resource server.")
     return response.text
