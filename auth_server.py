@@ -91,9 +91,13 @@ def token():
 @app.route('/introspect', methods=['POST'])
 def introspect():
     token = request.form.get('token')
+    logger.info(f"Recieved token: {token}")
 
     # Check if the token exists and is valid
     token_data = tokens.get(token)
+
+    logger.info(f"Loaded token_data: {token_data}")
+
     if token_data:
         # In a real app, you'd also check if the token has expired
         return token_data  # Simplified for demo; consider what data should be shared
