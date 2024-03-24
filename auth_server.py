@@ -66,10 +66,6 @@ def token():
             redirect_uri in clients[client_id]['redirect_uris'] and
             code in authorized_codes and
             authorized_codes[code]['client_id'] == client_id):
-
-        # Remove the used authorization code
-        del authorized_codes[code]
-
         # Generate an access token (for simplicity, we're using a random string here)
         access_token = secrets.token_urlsafe(32)
         # Store token data
@@ -78,6 +74,9 @@ def token():
             'scopes': ['email'],  # Example scope
             'expires_in': 3600  # Example expiration, in seconds
         }
+
+        # Remove the used authorization code
+        del authorized_codes[code]
 
         # In a real application, you might want to associate this token with user data,
         # set an expiration, and store it so it can be validated later.
