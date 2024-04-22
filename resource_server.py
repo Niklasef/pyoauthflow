@@ -39,10 +39,25 @@ def get_contacts():
 def validate_token(token):
     response = requests.post(AUTH_SERVER_INTROSPECT_ENDPOINT, data={'token': token})
     if response.status_code == 200:
-        # Assuming a successful response includes token data
         token_data = response.json()
-        return True, token_data
-    return False, None
+        if token_data.get('active', False):
+            # Retrieve the array of scopes from the token data
+            token_scopes = token_data.get('scopes', [])  # Default to an empty list if no scopes key is found
+            required_scope = "contacts"  # For example, assume 'contacts' is the necessary scope
+            
+            # Check if the required scope is part of the token's scopes
+            if required_scope in token_scopes:
+                return True, token_data
+            else:
+                logger.warning(f"Token does not have the required scope: {required_scope}")
+                return False, None
+        else:
+            logger.warning("Token is inactive.")
+            return False, None
+    else:
+        logger.warning("Failed to introspect token.")
+        return False, None
+
 
 if __name__ == '__main__':
     logger.info("Starting the Resource Server...")

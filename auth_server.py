@@ -71,7 +71,8 @@ def token():
         # Store token data
         tokens[access_token] = {
             'user': authorized_codes[code]['user'],
-            'scopes': ['email'],  # Example scope
+            'scopes': ['contacts'],  # Example scope
+            'active': True,
             'expires_in': 3600  # Example expiration, in seconds
         }
 
