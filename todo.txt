@@ -1,2 +1,2 @@
 - add scope in token validation on resource server using auth server introspection
-- rename grant to consent (with consent type= list contaacts)
+X- rename grant to consent (with consent type= list contaacts)

@@ -26,7 +26,7 @@ tokens = {}
 def authorize():
     user = request.args.get('user')
     password = request.args.get('password')
-    grant = request.args.get('grant', 'no').lower() == 'yes'
+    consent = request.args.get('consent', 'no').lower() == 'yes'
 
     if user not in users:
         # User not found
@@ -36,8 +36,8 @@ def authorize():
         # Password does not match
         return "Authentication failed", 401
 
-    if grant:
-        # User authenticated and grant is 'yes'
+    if consent:
+        # User authenticated and consent is 'yes'
         client_id = request.args.get('client_id')
         redirect_uri = request.args.get('redirect_uri')
         
@@ -50,8 +50,8 @@ def authorize():
         # Redirect back to the client with the authorization code
         return redirect(f"{redirect_uri}?code={auth_code}")
     else:
-        # User authenticated but grant is not 'yes'
-        return "Access not granted by user. Add 'grant=yes' to grant access.", 401
+        # User authenticated but consent is not 'yes'
+        return "Access not consented by user. Add 'consent=yes' to consent access.", 401
 
 @app.route('/token', methods=['POST'])
 def token():
