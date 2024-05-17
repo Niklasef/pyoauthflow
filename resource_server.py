@@ -37,8 +37,10 @@ def get_contacts():
     return jsonify(contacts)
 
 def validate_token(token):
+    logger.info('Introspecting token against auth server')
     response = requests.post(AUTH_SERVER_INTROSPECT_ENDPOINT, data={'token': token})
     if response.status_code == 200:
+        logger.info('Introspection token against auth server was successful')
         token_data = response.json()
         if token_data.get('active', False):
             # Retrieve the array of scopes from the token data
